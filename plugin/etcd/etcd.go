@@ -75,7 +75,12 @@ func (e *Etcd) Records(state request.Request, exact bool) ([]msg.Service, error)
 	name := state.Name()
 
 	path, star := msg.PathWithWildcard(name, e.PathPrefix)
-	r, err := e.get(path, true)
+	// add suffix
+	if !strings.HasSuffix(path, "/") {
+		path = path + "/"
+	}
+	// change recursive to false
+	r, err := e.get(path, false)
 	if err != nil {
 		return nil, err
 	}
